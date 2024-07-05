@@ -2,36 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guess the Number</title>
+    <title>Telegram Game</title>
     <style>
         body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             font-family: Arial, sans-serif;
-            text-align: center;
+            background-color: #f4f4f4;
         }
-        #output {
+        #message {
             font-size: 24px;
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Guess the Number Game</h1>
-    <p>Guess a number between 1 and 10:</p>
-    <input type="number" id="guessInput">
-    <button onclick="checkGuess()">Guess</button>
-    <p id="output"></p>
+    <div id="message">Loading...</div>
 
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        function checkGuess() {
-            var guess = document.getElementById('guessInput').value;
-            var randomNumber = Math.floor(Math.random() * 10) + 1; // Генерация случайного числа от 1 до 10
-            if (guess == randomNumber) {
-                document.getElementById('output').innerHTML = "Congratulations! You guessed the number " + randomNumber + "!";
-            } else {
-                document.getElementById('output').innerHTML = "Sorry, the number was " + randomNumber + ". Try again!";
-            }
-        }
+        Telegram.WebApp.ready();
+
+        // Get the user's name
+        const user = Telegram.WebApp.initDataUnsafe.user;
+        const userName = user ? user.first_name : "пользователь";
+
+        // Display the message
+        document.getElementById('message').innerText = `Привет, ${userName}`;
     </script>
 </body>
 </html>
