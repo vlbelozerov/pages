@@ -24,8 +24,8 @@
     window.onload = function() {
       const appDiv = document.getElementById('app');
       const errorDiv = document.getElementById('error');
-      
-      if (window.Telegram.WebApp.isIframe) {
+
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
         // Telegram Web App environment
         const tg = window.Telegram.WebApp;
         tg.ready();
@@ -38,7 +38,8 @@
           document.body.style.backgroundColor = tg.themeParams.bg_color;
         });
 
-        appDiv.innerText = `Hello, ${tg.initDataUnsafe.user.first_name}`;
+        appDiv.innerText = `Hello, ${tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : 'User'}`;
+        appDiv.classList.remove('hidden');
       } else {
         // Non-Telegram environment
         errorDiv.classList.remove('hidden');
