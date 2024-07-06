@@ -1,35 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Telegram Game</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
-        #message {
-            font-size: 24px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram Game</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    #app {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      color: #333;
+    }
+  </style>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    window.onload = function() {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+
+      // Wait for a few seconds before expanding to full screen
+      setTimeout(() => {
+        tg.expand();
+      }, 3000); // 3 seconds delay
+
+      // Set up the event handlers if needed
+      tg.onEvent('themeChanged', () => {
+        document.body.style.backgroundColor = tg.themeParams.bg_color;
+      });
+
+      document.getElementById('app').innerText = `Hello, ${tg.initDataUnsafe.user.first_name}`;
+    };
+  </script>
 </head>
 <body>
-    <div id="message">Loading...</div>
-
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-        Telegram.WebApp.ready();
-
-        // Get the user's name
-        const user = Telegram.WebApp.initDataUnsafe.user;
-        const userName = user ? user.first_name : "пользователь";
-
-        // Display the message
-        document.getElementById('message').innerText = `Привет, ${userName}`;
-    </script>
+  <div id="app">Loading...</div>
 </body>
 </html>
