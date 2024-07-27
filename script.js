@@ -1,23 +1,24 @@
 const grid = document.getElementById('grid');
-let rooms = [];
-let furniture = [];
+let roomPoints = [];
 let isDrawingRoom = false;
 
 grid.addEventListener('click', (e) => {
     if (isDrawingRoom) {
         let x = e.offsetX;
         let y = e.offsetY;
-        rooms.push({ x, y });
-        if (rooms.length === 4) {
+        addRoomPoint(x, y);
+        roomPoints.push({ x, y });
+        if (roomPoints.length === 4) {
             drawRoom();
             isDrawingRoom = false;
-            rooms = [];
+            roomPoints = [];
         }
     }
 });
 
 document.getElementById('addRoom').addEventListener('click', () => {
     isDrawingRoom = true;
+    clearRoomPoints();
 });
 
 document.getElementById('addFurniture').addEventListener('click', () => {
@@ -30,14 +31,41 @@ document.getElementById('addFurniture').addEventListener('click', () => {
     grid.appendChild(newFurniture);
 });
 
+function addRoomPoint(x, y) {
+    let point = document.createElement('div');
+    point.classList.add('room-point');
+    point.style.left = `${x}px`;
+    point.style.top = `${y}px`;
+    grid.appendChild(point);
+}
+
 function drawRoom() {
-    let room = document.createElement('div');
-    room.classList.add('room');
-    room.style.position = 'absolute';
-    room.style.left = `${Math.min(...rooms.map(p => p.x))}px`;
-    room.style.top = `${Math.min(...rooms.map(p => p.y))}px`;
-    room.style.width = `${Math.max(...rooms.map(p => p.x)) - Math.min(...rooms.map(p => p.x))}px`;
-    room.style.height = `${Math.max(...rooms.map(p => p.y)) - Math.min(...rooms.map(p => p.y))}px`;
-    room.style.border = '2px solid black';
-    grid.appendChild(room);
+    for (let i = 0; i < roomPoints.length; i++) {
+        let startX = roomPoints[i].x;
+        let startY = roomPoints[i].y;
+        let endX = roomPoints[(i + 1) % roomPoints.length].x;
+        let endY = roomPoints[(i + 1) % roomPoints.length].y;
+        
+        let line = document.createElement('div');
+        line.style.position = 'absolute';
+        line.style.backgroundColor = 'black';
+
+        let deltaX = endX - startX;
+        let deltaY = endY - startY;
+        let length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        line.style.width = `${length}px`;
+        line.style.height = '2px';
+        line.style.transformOrigin = '0 0';
+        line.style.transform = `rotate(${Math.atan2(deltaY, deltaX) * 180 / Math.PI}deg)`;
+
+        line.style.left = `${startX}px`;
+        line.style.top = `${startY}px`;
+        grid.appendChild(line);
+    }
+}
+
+function clearRoomPoints() {
+    const points = document.querySelectorAll('.room-point');
+    points.forEach(point => point.remove());
 }
