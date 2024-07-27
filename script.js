@@ -75,7 +75,7 @@ function drawRoom() {
 }
 
 function getSnappedPosition(x, y) {
-    let gridSize = 10; // размер клетки 10px, что соответствует 10 см
+    let gridSize = 10; // размер клетки 10px, что соответствует 0.1 метра
     let snappedX = Math.round(x / gridSize) * gridSize;
     let snappedY = Math.round(y / gridSize) * gridSize;
     return { x: snappedX, y: snappedY };
@@ -87,9 +87,9 @@ function showDistance(startPoint, currentPoint) {
     let distance = 0;
 
     if (deltaX > deltaY) {
-        distance = deltaX / 10; // Перевод в метры
+        distance = deltaX / 100; // Перевод в метры, 1 пиксель = 0.01 метра
     } else {
-        distance = deltaY / 10; // Перевод в метры
+        distance = deltaY / 100; // Перевод в метры, 1 пиксель = 0.01 метра
     }
 
     distance = distance.toFixed(2); // Округление до двух знаков после запятой
