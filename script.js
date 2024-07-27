@@ -35,28 +35,43 @@ document.getElementById('addFurniture').addEventListener('click', () => {
     newFurniture.classList.add('furniture');
     newFurniture.style.left = '50px';
     newFurniture.style.top = '50px';
-    newFurniture.style.width = '100px'; // ширина 1 метр
-    newFurniture.style.height = '50px'; // высота 0.5 метра
+    newFurniture.style.width = '100px'; // 1 метр
+    newFurniture.style.height = '50px'; // 0.5 метра
     grid.appendChild(newFurniture);
 
-    // Добавление возможности перетаскивания мебели
-    newFurniture.draggable = true;
-    newFurniture.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', null);
-        newFurniture.style.zIndex = 1000;
-    });
-
-    newFurniture.addEventListener('dragend', (e) => {
-        const gridRect = grid.getBoundingClientRect();
-        const offsetX = e.clientX - gridRect.left;
-        const offsetY = e.clientY - gridRect.top;
-
-        const { x, y } = getSnappedPosition(offsetX, offsetY);
-        newFurniture.style.left = `${x}px`;
-        newFurniture.style.top = `${y}px`;
-        newFurniture.style.zIndex = 1;
-    });
+    makeFurnitureDraggable(newFurniture);
 });
+
+function makeFurnitureDraggable(furniture) {
+    let isDragging = false;
+    let startX, startY;
+
+    furniture.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - parseInt(furniture.style.left);
+        startY = e.clientY - parseInt(furniture.style.top);
+        furniture.style.zIndex = 1000;
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
+
+    function onMouseMove(e) {
+        if (isDragging) {
+            let x = e.clientX - startX;
+            let y = e.clientY - startY;
+            let snappedPosition = getSnappedPosition(x, y);
+            furniture.style.left = `${snappedPosition.x}px`;
+            furniture.style.top = `${snappedPosition.y}px`;
+        }
+    }
+
+    function onMouseUp() {
+        isDragging = false;
+        furniture.style.zIndex = 1;
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+    }
+}
 
 function addRoomPoint(x, y) {
     let point = document.createElement('div');
