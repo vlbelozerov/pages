@@ -12,7 +12,7 @@ grid.addEventListener('click', (e) => {
             drawRoom();
             isDrawingRoom = false;
             roomPoints = [];
-            if (distanceLabel) distanceLabel.remove();
+            removeDistanceLabel();
         }
     }
 });
@@ -27,7 +27,7 @@ grid.addEventListener('mousemove', (e) => {
 document.getElementById('addRoom').addEventListener('click', () => {
     isDrawingRoom = true;
     clearRoomPoints();
-    if (distanceLabel) distanceLabel.remove();
+    removeDistanceLabel();
 });
 
 document.getElementById('addFurniture').addEventListener('click', () => {
@@ -111,5 +111,11 @@ function showDistance(startPoint, currentPoint) {
 function clearRoomPoints() {
     const points = document.querySelectorAll('.room-point');
     points.forEach(point => point.remove());
-    if (distanceLabel) distanceLabel.remove();
+}
+
+function removeDistanceLabel() {
+    if (distanceLabel) {
+        distanceLabel.remove();
+        distanceLabel = null;
+    }
 }
