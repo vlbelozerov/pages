@@ -1,7 +1,6 @@
 const grid = document.getElementById('grid');
 let roomPoints = [];
 let isDrawingRoom = false;
-let lastMousePosition = null;
 let distanceLabel = null;
 
 grid.addEventListener('click', (e) => {
@@ -82,11 +81,18 @@ function getSnappedPosition(x, y) {
     return { x: snappedX, y: snappedY };
 }
 
-function showDistance(point1, point2) {
-    let deltaX = point2.x - point1.x;
-    let deltaY = point2.y - point1.y;
-    let distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY) / 10; // перевод в метры
-    distance = distance.toFixed(2);
+function showDistance(startPoint, currentPoint) {
+    let deltaX = Math.abs(currentPoint.x - startPoint.x);
+    let deltaY = Math.abs(currentPoint.y - startPoint.y);
+    let distance = 0;
+
+    if (deltaX > deltaY) {
+        distance = deltaX / 10; // Перевод в метры
+    } else {
+        distance = deltaY / 10; // Перевод в метры
+    }
+
+    distance = distance.toFixed(2); // Округление до двух знаков после запятой
 
     if (!distanceLabel) {
         distanceLabel = document.createElement('div');
@@ -98,8 +104,8 @@ function showDistance(point1, point2) {
         grid.appendChild(distanceLabel);
     }
     distanceLabel.textContent = `${distance} м`;
-    distanceLabel.style.left = `${point2.x + 10}px`;
-    distanceLabel.style.top = `${point2.y + 10}px`;
+    distanceLabel.style.left = `${currentPoint.x + 10}px`;
+    distanceLabel.style.top = `${currentPoint.y + 10}px`;
 }
 
 function clearRoomPoints() {
