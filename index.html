@@ -1,54 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telegram Game</title>
-  <style>
-    body {
-      margin: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      font-family: Arial, sans-serif;
-      font-size: 24px;
-      color: #333;
-    }
-    .hidden {
-      display: none;
-    }
-  </style>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
-    window.onload = function() {
-      const appDiv = document.getElementById('app');
-      const errorDiv = document.getElementById('error');
-
-      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
-        // Telegram Web App environment
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-
-        setTimeout(() => {
-          tg.expand();
-        }, 3000); // 3 seconds delay
-
-        tg.onEvent('themeChanged', () => {
-          document.body.style.backgroundColor = tg.themeParams.bg_color;
-        });
-
-        appDiv.innerText = `Hello, ${tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : 'User'}`;
-        appDiv.classList.remove('hidden');
-      } else {
-        // Non-Telegram environment
-        errorDiv.classList.remove('hidden');
-      }
-    };
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apartment Layout Designer</title>
+    <style>
+        #grid {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border: 1px solid #000;
+            background-size: 20px 20px;
+            background-image: linear-gradient(to right, #ddd 1px, transparent 1px),
+                              linear-gradient(to bottom, #ddd 1px, transparent 1px);
+        }
+        .furniture {
+            position: absolute;
+            cursor: pointer;
+            border: 1px solid #000;
+            background-color: rgba(0, 0, 255, 0.1);
+        }
+    </style>
 </head>
 <body>
-  <div id="app" class="hidden">Loading...</div>
-  <div id="error" class="hidden">Пожалуйста, откройте приложение в приложении Telegram</div>
+    <div id="grid"></div>
+    <button id="addRoom">Add Room</button>
+    <button id="addFurniture">Add Furniture</button>
+    <script src="script.js"></script>
 </body>
 </html>
