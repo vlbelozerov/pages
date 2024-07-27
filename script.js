@@ -1,24 +1,34 @@
 const grid = document.getElementById('grid');
 let roomPoints = [];
 let isDrawingRoom = false;
+let lastMousePosition = null;
+let distanceLabel = null;
 
 grid.addEventListener('click', (e) => {
     if (isDrawingRoom) {
-        let x = e.offsetX;
-        let y = e.offsetY;
+        let { x, y } = getSnappedPosition(e.offsetX, e.offsetY);
         addRoomPoint(x, y);
         roomPoints.push({ x, y });
         if (roomPoints.length === 4) {
             drawRoom();
             isDrawingRoom = false;
             roomPoints = [];
+            if (distanceLabel) distanceLabel.remove();
         }
+    }
+});
+
+grid.addEventListener('mousemove', (e) => {
+    if (isDrawingRoom && roomPoints.length > 0) {
+        let { x, y } = getSnappedPosition(e.offsetX, e.offsetY);
+        showDistance(roomPoints[roomPoints.length - 1], { x, y });
     }
 });
 
 document.getElementById('addRoom').addEventListener('click', () => {
     isDrawingRoom = true;
     clearRoomPoints();
+    if (distanceLabel) distanceLabel.remove();
 });
 
 document.getElementById('addFurniture').addEventListener('click', () => {
@@ -45,7 +55,7 @@ function drawRoom() {
         let startY = roomPoints[i].y;
         let endX = roomPoints[(i + 1) % roomPoints.length].x;
         let endY = roomPoints[(i + 1) % roomPoints.length].y;
-        
+
         let line = document.createElement('div');
         line.style.position = 'absolute';
         line.style.backgroundColor = 'black';
@@ -65,7 +75,35 @@ function drawRoom() {
     }
 }
 
+function getSnappedPosition(x, y) {
+    let gridSize = 10; // размер клетки 10px, что соответствует 10 см
+    let snappedX = Math.round(x / gridSize) * gridSize;
+    let snappedY = Math.round(y / gridSize) * gridSize;
+    return { x: snappedX, y: snappedY };
+}
+
+function showDistance(point1, point2) {
+    let deltaX = point2.x - point1.x;
+    let deltaY = point2.y - point1.y;
+    let distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY) / 10; // перевод в метры
+    distance = distance.toFixed(2);
+
+    if (!distanceLabel) {
+        distanceLabel = document.createElement('div');
+        distanceLabel.style.position = 'absolute';
+        distanceLabel.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+        distanceLabel.style.padding = '2px 5px';
+        distanceLabel.style.border = '1px solid #000';
+        distanceLabel.style.borderRadius = '5px';
+        grid.appendChild(distanceLabel);
+    }
+    distanceLabel.textContent = `${distance} м`;
+    distanceLabel.style.left = `${point2.x + 10}px`;
+    distanceLabel.style.top = `${point2.y + 10}px`;
+}
+
 function clearRoomPoints() {
     const points = document.querySelectorAll('.room-point');
     points.forEach(point => point.remove());
+    if (distanceLabel) distanceLabel.remove();
 }
